@@ -23,12 +23,19 @@
 * {boolean} props.?stop=true, 默认是true，触发调用e.stopPropagation
 * {(to:string)=>{}} props.?onClick 点击后的触发回调函数，第一位参数是定义的路径`to`
 ```
+import { Link } from 'react-router-concent';
+
 <Link to="/user/:id" style={{border:1px}}>
 ```
 ### history
 除了`Link`，用户也可以使用history直接跳转或者执行其他操作，api与`react-router`提供的完全保持一致
 * history.push(path:string)，跳转到某个路径的路由页面
 * 其他history.*** 参考`react-router`的提供与实现
+```
+import { history } from 'react-router-concent';
+
+<div onClick={()=>history.push('/path')}>点我跳转</div>
+```
 ### cc类的扩展函数`$$onUrlChanged`
 在cc类定义`$$onUrlChanged`函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
 ```
