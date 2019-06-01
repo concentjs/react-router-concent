@@ -1,0 +1,2 @@
+
+exports.ROUTER_MODULE = '$$CONCENT_ROUTER';
