@@ -11,7 +11,17 @@ var WAIT_REFS_UNSET = 300;
 var JUST_INIT_TIME_SPAN = WAIT_REFS_UNSET + 100;
 
 var actions = ['PUSH', 'POP', 'REPLACE'];
+var initCount = 0;
 
+function isHot() {
+  if (window.name === 'previewFrame') {
+    return true;
+  }
+  if (window.location.hostname === 'localhost') {
+    return true;
+  }
+  return false;
+}
 
 module.exports = rrd.withRouter(
   class extends react.Component {
@@ -19,6 +29,14 @@ module.exports = rrd.withRouter(
       super(props, context);
     }
     componentDidMount() {
+      if(!isHot()){
+        if(initCount > 0 ){
+          throw new Error(`ConnectRouter can only been initialized on time!`);
+        }
+      }
+   
+      initCount += 1;
+
       var props = this.props;
       var history = props.history;
       historyProxy.setHistory(history);
@@ -28,7 +46,6 @@ module.exports = rrd.withRouter(
       var callUrlChangedOnInit = props.callUrlChangedOnInit === true;
 
       history.listen((param, action) => {
-        console.log(action)
         if (actions.includes(action)) {
           cc.setState(ROUTER_MODULE, param);
         }
@@ -36,14 +53,14 @@ module.exports = rrd.withRouter(
         //给300毫秒延迟，
         //既让concent有足够时间把该卸载的组件卸掉
         //也让concent有足够的时间把改挂的组件全部挂上(对于那种初次挂的组件)
+        //然后在去刷新对应的cc组件
         setTimeout(function () {
           var refs = cc.getRefs();
           var now = Date.now();
 
           refs.forEach(ref => {
             try {
-              //CcFragment的函数定义在ref.cc里
-              var fn = ref.$$onUrlChanged || ref.cc.onUrlChanged;
+              var fn = ref.cc.onUrlChanged;
               if (fn) {
                 //onUrlChanged在组件初次挂载的时候也会执行
                 if (callUrlChangedOnInit) {

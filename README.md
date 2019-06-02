@@ -43,7 +43,13 @@ class Foo extends React.Component{
 ```
 ### CcFragment使用`onUrlChanged`属性来监听url变化
 ```
-const F = ()=><CcFragment onUrlChanged={()=>console.log('url changed')} render={()=><h1>fragment</h1>} />
+const F = ()=><CcFragment render={({forceUpdate, onUrlChanged})=>{
+  onUrlChanged((params, action)=>{
+    console.log('url changed');
+    forceUpdate();
+  });
+  return <h1>fragment</h1>
+}} />
 
 //注意不要把此函数直接定义在component里，要不然会一直重复创建该组件
 <Route path="/user/:id" component={F} />
@@ -57,7 +63,7 @@ import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ConnectRouter, history, Link } from 'react-router-concent';
-import { run, register } from 'concent';
+import { run, register, CcFragment } from 'concent';
 
 run();
 
@@ -103,7 +109,13 @@ class UserDetail extends Component {
 }
 const UserDetail_ = register('UserDetail')(UserDetail);
 
-const F = ()=><CcFragment onUrlChanged={()=>console.log('!!!!!!!!!!!!!!')} render={()=><h1>fragment</h1>} />
+const F = ()=><CcFragment render={({hook, forceUpdate, onUrlChanged})=>{
+  const [msg, setMsg] = hook.useState('');
+  onUrlChanged((params, action)=>{
+    setMsg('url changed '+ Date.now());
+  });
+  return <h1>fragment msg: {msg}</h1>
+}} />
 
 class Layout extends Component {
   render() {
