@@ -29,12 +29,12 @@ module.exports = rrd.withRouter(
       super(props, context);
     }
     componentDidMount() {
-      if(!isHot()){
-        if(initCount > 0 ){
+      if (!isHot()) {
+        if (initCount > 0) {
           throw new Error(`ConnectRouter can only been initialized on time!`);
         }
       }
-   
+
       initCount += 1;
 
       var props = this.props;
