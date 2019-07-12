@@ -1,16 +1,17 @@
 
 var history = null;
+var slice = Array.prototype.slice;
 
 function _historyNotReady() {
   throw new Error('you may forget to initialize <ConnectRouter /> in your app!');
 }
 
 function _callHistoryMethod() {
-  const args = Array.prototype.slice.call(arguments);
+  const args = slice.call(arguments);
   var method = args[0];
   var inputArgs = args[1];
 
-  if (history) history[method].apply(null, Array.prototype.slice.call(inputArgs));
+  if (history) history[method].apply(null, slice.call(inputArgs));
   else _historyNotReady();
 }
 
@@ -20,6 +21,10 @@ exports.setHistory = function (_history) {
 
 exports.getHistory = function () {
   return {
+    listen: function () {
+      if (!history) _historyNotReady();
+      return history.listen;
+    },
     block: function () {
       _callHistoryMethod('block', arguments);
     },

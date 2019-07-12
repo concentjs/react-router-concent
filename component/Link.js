@@ -7,19 +7,21 @@ module.exports = function (props) {
   var style = props.style;
   var to = props.to;
   var onClick = props.onClick;
+  var className = props.className;
 
   var elProps = {
+    className: className,
     href: "javascript:;",
     onClick: function (e) {
-      if(e.stopPropagation){
-        if(props.stop === false){
+      if (e.stopPropagation) {
+        if (props.stop === false) {
           //do nothing
-        }else{
+        } else {
           e.stopPropagation();
         }
       }
       history.push(to);
-      if(onClick)onClick(to);
+      if (onClick) onClick(to);
     },
     style
   };
