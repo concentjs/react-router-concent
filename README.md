@@ -2,13 +2,13 @@
 连接`concent`与`react-router`，让你的`concent`应用完美接入`react-router`.
 
 ## 核心组件与api
-### ConnectRouter
+### 使用方法1：ConnectRouter
 在app顶层实例一个ConnectRouter，让`concent`连接上`react-router`
 * {boolean} callUrlChangeOnInit=false
 * {(history:object)=>{}} connected 连接上router的回调函数
 ```
-// 设置callUrlChangeOnInit为true，
-// 表示要让定义了$onUrlChanged的cc类一定会触发器$onUrlChanged函数的执行
+// 设置callUrlChangeOnInit为true时，
+// 由路由切换导致的挂载上的组件，如果该组件定义了$onUrlChanged，则初次挂载的时候就会触发器$onUrlChanged函数的执行
 <ConnectRouter callUrlChangeOnInit={true} />
 
 // callUrlChangeOnInit默认是false，
@@ -16,6 +16,13 @@
 // 只有在存在期间，如果用户反复点同一个路由url，会触发$onUrlChanged函数的执行
 <ConnectRouter  />
 ```
+
+### 使用方法2：createHistoryProxy
+```
+createHistoryProxy: (history: RouterHistory, callUrlChangeOnInit?:boolean)
+```
+在顶层容器里，只会初始化一次的地方掉用`createHistoryProxy`
+
 ### Link
 负责跳转匹配路径规则的路由
 * {string} prop.to 要跳转的路由路径
