@@ -19,8 +19,11 @@ exports.setHistory = function (_history) {
   history = _history;
 }
 
+var cachedHistory = null;
 exports.getHistory = function () {
-  return {
+  if (cachedHistory) return cachedHistory;
+
+  var _history = {
     listen: function () {
       if (!history) _historyNotReady();
       return history.listen;
@@ -53,4 +56,8 @@ exports.getHistory = function () {
       return history;
     }
   };
+  cachedHistory = _history;
+  if (window && !window.ccHistory) window.ccHistory = cachedHistory;
+  return cachedHistory;
 }
+
