@@ -57,7 +57,7 @@ exports.getHistory = function () {
     }
   };
   cachedHistory = _history;
-  if (window && !window.ccHistory) window.ccHistory = cachedHistory;
+  if (window && !window.ccHistory) window.cc_history = cachedHistory;
   return cachedHistory;
 }
 
