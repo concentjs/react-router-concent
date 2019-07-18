@@ -24,10 +24,6 @@ exports.getHistory = function () {
   if (cachedHistory) return cachedHistory;
 
   var _history = {
-    listen: function () {
-      if (!history) _historyNotReady();
-      return history.listen;
-    },
     block: function () {
       _callHistoryMethod('block', arguments);
     },
