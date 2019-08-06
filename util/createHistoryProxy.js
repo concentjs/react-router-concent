@@ -35,7 +35,7 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
 
       refs.forEach(ref => {
         try {
-          var fn = ref.cc.onUrlChanged;
+          var fn = ref.ctx.aux.onUrlChanged;
           if (fn) {
             //onUrlChanged在组件初次挂载的时候也会执行
             if (_callUrlChangedOnInit) {
@@ -43,7 +43,7 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
               return
             }
 
-            var initTime = ref.cc.ccState.initTime;
+            var initTime = ref.ctx.initTime;
             //时间太短，是初次挂载上，忽略onUrlChanged
             if (now - initTime > JUST_INIT_TIME_SPAN) {
               fn.call(ref, param, action, history);
