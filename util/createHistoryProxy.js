@@ -13,8 +13,10 @@ var initCount = 0;
 module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
   var _callUrlChangedOnInit = callUrlChangedOnInit === true;
   if (initCount > 0) {
-    console.warn('historyProxy already been created! you may init ConnectedRouter or call createHistoryProxy more than one time.');
-    return;
+    //非hotReload 模式才不允许重复设置history，要不然会导致stackblitz里热加载后，使用history.push的操作失效
+    if (!cc.ccContext.isHotReloadMode()) {
+      throw new Error('historyProxy already been created! you can not init ConnectedRouter or call createHistoryProxy more than one time.');
+    }
   }
 
   initCount += 1;
