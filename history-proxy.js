@@ -3,7 +3,7 @@ var history = null;
 var slice = Array.prototype.slice;
 
 function _historyNotReady() {
-  throw new Error('you may forget to initialize <ConnectRouter /> in your app!');
+  throw new Error('you may forget to initialize <ConnectRouter /> or call createHistoryProxy in your app!');
 }
 
 function _callHistoryMethod() {

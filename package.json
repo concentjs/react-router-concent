@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/concentjs/react-router-concent#readme",
   "dependencies": {
-    "concent": "^1.4.12",
+    "concent": "^1.5.9",
     "react-router": "^5.0.0"
   }
 }
