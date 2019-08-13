@@ -52,6 +52,8 @@ exports.getHistory = function () {
       return history;
     }
   };
+  if (window && window.location) _history.location = window.location;
+
   cachedHistory = _history;
   if (window && !window.cc_history) window.cc_history = cachedHistory;
   return cachedHistory;
