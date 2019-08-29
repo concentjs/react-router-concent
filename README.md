@@ -82,15 +82,19 @@ import { run, register, CcFragment } from 'concent';
 run();
 
 class User extends Component {
-  componentDidMount() {
-    this.init('componentDidMount');
-  }
-  $$onUrlChanged(params, action, history) {
-    console.log(params);
-    this.init('$$onUrlChanged');
+  $$setup(ctx) {
+    ctx.aux('onUrlChanged', () => {
+      console.log(params);
+      this.init('onUrlChanged');
+    });
+
+    // mock componentDidMount
+    ctx.effect(() => {
+      this.init('componentDidMount');
+    }, []);
   }
   init = (by) => {
-    console.log('%c init User, triggered by '+by, 'color:red; border:1px solid red');
+    console.log('%c init User, triggered by ' + by, 'color:red; border:1px solid red');
   }
   render() {
     return (
@@ -103,15 +107,18 @@ class User extends Component {
 const User_ = register('User')(User);
 
 class UserDetail extends Component {
-  componentDidMount() {
-    this.init('componentDidMount');
-  }
-  $$onUrlChanged(params, action, history) {
-    console.log(params);
-    this.init('$$onUrlChanged');
+  $$setup(ctx) {
+    ctx.aux('onUrlChanged', () => {
+      console.log(params);
+      this.init('onUrlChanged');
+    });
+
+    ctx.effect(() => {
+      this.init('componentDidMount');
+    }, []);
   }
   init = (by) => {
-    console.log('%c init UserDetail, triggered by '+by, 'color:red; border:1px solid red');
+    console.log('%c init UserDetail, triggered by ' + by, 'color:red; border:1px solid red');
   }
   render() {
     return (
@@ -121,15 +128,21 @@ class UserDetail extends Component {
     );
   }
 }
+
 const UserDetail_ = register('UserDetail')(UserDetail);
 
-const F = ()=><CcFragment render={({hook, forceUpdate, onUrlChanged})=>{
-  const [msg, setMsg] = hook.useState('');
-  onUrlChanged((params, action)=>{
-    setMsg('url changed '+ Date.now());
+const setup = ctx => {
+  ctx.aux('onUrlChanged', (params, action) => {
+    ctx.setState({ msg: 'url changed ' + Date.now() });
   });
-  return <h1>fragment msg: {msg}</h1>
-}} />
+}
+const iState = { msg: '' };
+
+const F = () => (
+  <CcFragment setup={setup} state={iState} render={ctx => {
+    return <h1>fragment msg: {ctx.state.msg}</h1>
+  }} />
+);
 
 class Layout extends Component {
   render() {
@@ -139,7 +152,7 @@ class Layout extends Component {
         <div onClick={() => history.push('/user')}>go to user page</div>
         <div onClick={() => history.push('/user/55')}>go to userDetail page</div>
         {/** 可以基于history主动push，也可以使用Link */}
-        <Link to="/user" onClick={to=>alert(to)}>to user</Link>
+        <Link to="/user" onClick={to => alert(to)}>to user</Link>
         <div onClick={() => history.push('/wow')}>fragment</div>
 
         <Route path="/user" component={User_} />
@@ -158,6 +171,5 @@ const App = () => (
     </div>
   </BrowserRouter>
 )
-ReactDOM.render(<App />, document.getElementById('root'))
-
+ReactDOM.render(<App />, document.getElementById('root'));
 ```

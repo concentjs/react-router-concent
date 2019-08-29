@@ -13,8 +13,8 @@ module.exports = function (props) {
   // Warning: A future version of React will block javascript:
   var elProps = {
     className: className,
-    // href: "javascript:;",
-    href: "########",
+    href: "javascript:;",
+    // href: "########", //block就block吧，本来里面就没逻辑，这样写到导致在线 IDE的内嵌浏览器里使用Link会重调转，刷新整个页面
     onClick: function (e) {
       if (e.stopPropagation) {
         if (props.stop === false) {
