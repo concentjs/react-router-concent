@@ -58,4 +58,3 @@ exports.getHistory = function () {
   if (window && !window.cc_history) window.cc_history = cachedHistory;
   return cachedHistory;
 }
-

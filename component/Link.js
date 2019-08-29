@@ -9,9 +9,12 @@ module.exports = function (props) {
   var onClick = props.onClick;
   var className = props.className;
 
+  // set href =  "javascript:;" will receive
+  // Warning: A future version of React will block javascript:
   var elProps = {
     className: className,
-    href: "javascript:;",
+    // href: "javascript:;",
+    href: "########",
     onClick: function (e) {
       if (e.stopPropagation) {
         if (props.stop === false) {

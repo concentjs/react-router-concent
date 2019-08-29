@@ -36,8 +36,9 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
       var now = Date.now();
 
       refs.forEach(ref => {
+        if (ref.__$$isUnmounted) return;
         try {
-          var fn = ref.ctx.aux.onUrlChanged;
+          var fn = ref.ctx.auxMap.onUrlChanged;
           if (fn) {
             //onUrlChanged在组件初次挂载的时候也会执行
             if (_callUrlChangedOnInit) {
