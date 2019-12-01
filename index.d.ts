@@ -19,21 +19,34 @@ type LinkProps = {
   to: string,
   onClick: (to: string) => void,
 };
-export const Link: FC<LinkProps> = props => ReactNode;
+
+export const Link: FC<LinkProps>;
 
 export declare const history: {
-  block: IAnyFn,
-  createHref: IAnyFn,
-  go: IAnyFn,
-  goBack: IAnyFn,
-  goForward: IAnyFn,
-  listen: IAnyFn,
-  push: IAnyFn,
-  replace: IAnyFn,
+  block: H.History['block'],
+  createHref: H.History['createHref'],
+  go: H.History['go'],
+  goBack: H.History['goBack'],
+  goForward: H.History['goForward'],
+  listen: H.History['listen'],
+  push: H.History['push'],
+  replace: H.History['replace'],
   getRouterHistory: () => H.History
 };
 
 export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean): void;
+
+export interface IRouterState {
+  hash: string,
+  key: string,
+  pathname: string,
+  search: string,
+  state: any,
+}
+
+export interface IOnUrlChangedCb {
+  (param: any, action: H.Action, history: H.History): void;
+}
 
 declare type DefaultExport = {
   ROUTER_MODULE: typeof ROUTER_MODULE,
@@ -41,6 +54,8 @@ declare type DefaultExport = {
   Link: typeof Link,
   history: typeof history,
   createHistoryProxy,
+  IRouterState: IRouterState,
+  IOnUrlChangedCb: IOnUrlChangedCb,
 }
 
 declare let defaultExport: DefaultExport;
