@@ -10,7 +10,20 @@ var JUST_INIT_TIME_SPAN = WAIT_REFS_UNSET + 100;
 var actions = ['PUSH', 'POP', 'REPLACE'];
 var initCount = 0;
 
+let insId = 1;
+let validInsId;
+function getInsId() {
+  insId++;
+  return insId;
+}
+
 module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
+
+  if (!history.__insId) {
+    history.__insId = getInsId();
+    validInsId = history.__insId;
+  }
+
   var _callUrlChangedOnInit = callUrlChangedOnInit === true;
   if (initCount > 0) {
     //非hotReload 模式才不允许重复设置history，要不然会导致stackblitz里热加载后，使用history.push的操作失效
@@ -23,6 +36,10 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
   historyProxy.setHistory(history);
 
   history.listen((param, action) => {
+    // 防止CodeSandbox热加载模式下，多个history实例同时监听都有效
+    // 只能让最新的一个history的监听起效
+    if (history.__insId !== validInsId) return;
+
     if (actions.includes(action)) {
       cc.setState(ROUTER_MODULE, param);
     }
