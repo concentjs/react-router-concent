@@ -35,7 +35,7 @@ export declare const history: {
 };
 
 export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean): void;
-
+export function configRouterModule(moduleName?: string): void;
 export interface IRouterState {
   hash: string,
   key: string,
@@ -53,7 +53,8 @@ declare type DefaultExport = {
   ConnectRouter: typeof ConnectRouter,
   Link: typeof Link,
   history: typeof history,
-  createHistoryProxy,
+  createHistoryProxy: typeof createHistoryProxy,
+  configRouterModule: typeof configRouterModule,
   IRouterState: IRouterState,
   IOnUrlChangedCb: IOnUrlChangedCb,
 }
