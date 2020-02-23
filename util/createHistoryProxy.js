@@ -1,6 +1,6 @@
 var cc = require('concent');
 var historyProxy = require('../history-proxy');
-var ROUTER_MODULE = require('../constant').ROUTER_MODULE;
+var moduleNameMod = require('./module-name');
 
 var WAIT_REFS_UNSET = 300;
 //比等待的时间多一点，比这个时间大的ref才是真正的需要触发$onUrlChanged，
@@ -41,7 +41,13 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
     if (history.__insId !== validInsId) return;
 
     if (actions.includes(action)) {
-      cc.setState(ROUTER_MODULE, param);
+      var modName = moduleNameMod.getModuleName();
+      var state = cc.getState(modName);
+      if (!state) {
+        console.warn(`forget to call configRouterModule after cc.run, react-router-concent will ignore write the changed state`);
+      } else {
+        cc.setState(modName, param);
+      }
     }
 
     //给300毫秒延迟，

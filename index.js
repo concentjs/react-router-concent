@@ -2,12 +2,14 @@ var ConnectRouter = require('./component/ConnectRouter');
 var Link = require('./component/Link');
 var historyProxy = require('./history-proxy');
 var createHistoryProxy = require('./util/createHistoryProxy');
+var moduleNameMod = require('./util/module-name');
 var cc = require('concent');
 var ROUTER_MODULE = require('./constant').ROUTER_MODULE;
 // var ROUTER_MODULE= Symbol('');
 
 
 var configRouterModule = (moduleName = ROUTER_MODULE) => {
+  moduleNameMod.setModuleName(moduleName);
   cc.configure(moduleName, {
     state: {
       hash: '',

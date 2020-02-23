@@ -36,17 +36,18 @@ export declare const history: {
 
 export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean): void;
 export function configRouterModule(moduleName?: string): void;
-export interface IRouterState {
+export interface IRouterState<T extends any = any> {
   hash: string,
   key: string,
   pathname: string,
   search: string,
-  state: any,
+  state: T,
 }
 
 export interface IOnUrlChangedCb {
   (param: any, action: H.Action, history: H.History): void;
 }
+
 
 declare type DefaultExport = {
   ROUTER_MODULE: typeof ROUTER_MODULE,
