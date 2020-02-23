@@ -1,6 +1,6 @@
 {
   "name": "react-router-concent",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "let using react-router more easily in concent",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/concentjs/react-router-concent#readme",
   "peerDependencies": {
-    "concent": "^1.5.60",
+    "concent": "^1.5.152",
     "react-router": "^5.0.0"
   }
 }
