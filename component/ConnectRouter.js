@@ -8,12 +8,10 @@ module.exports = rrd.withRouter(
   class extends react.Component {
     constructor(props, context) {
       super(props, context);
-    }
-    componentDidMount() {
       var props = this.props;
       var history = props.history;
       var callUrlChangedOnInit = props.callUrlChangedOnInit === true;
-      
+
       createHistoryProxy(history, callUrlChangedOnInit);
       if (props.connected) {
         props.connected(history);
