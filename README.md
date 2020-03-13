@@ -44,30 +44,20 @@ import { history } from 'react-router-concent';
 <div onClick={()=>history.push('/path')}>点我跳转</div>
 ```
 ### cc类的扩展函数`$$onUrlChanged`
-在cc类定义`$$onUrlChanged`函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
+在cc类`setup`里对`aux`定义`$$CONCENT_ROUTER/onUrlChanged`的监听函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
 ```
 @register()
 class Foo extends React.Component{
-  $$onUrlChanged(){
-    // do something here like initPage
+  $$setup(ctx){
+    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', ()=>{
+      // do something here like initPage
+    });
   }
 }
 
 <Route path="/user/:id" component={Foo} />
 ```
-### CcFragment使用`onUrlChanged`属性来监听url变化
-```
-const F = ()=><CcFragment render={({forceUpdate, onUrlChanged})=>{
-  onUrlChanged((params, action)=>{
-    console.log('url changed');
-    forceUpdate();
-  });
-  return <h1>fragment</h1>
-}} />
 
-//注意不要把此函数直接定义在component里，要不然会一直重复创建该组件
-<Route path="/user/:id" component={F} />
-```
 ### 关于store
 history的所有操作都将状态同步到了store的`$$CONCENT_ROUTER`模块下，可以在console里打开输入sss回车并查看
 
@@ -83,7 +73,7 @@ run();
 
 class User extends Component {
   $$setup(ctx) {
-    ctx.aux('onUrlChanged', () => {
+    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', () => {
       console.log(params);
       this.init('onUrlChanged');
     });
@@ -108,7 +98,7 @@ const User_ = register('User')(User);
 
 class UserDetail extends Component {
   $$setup(ctx) {
-    ctx.aux('onUrlChanged', () => {
+    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', () => {
       console.log(params);
       this.init('onUrlChanged');
     });
@@ -132,17 +122,22 @@ class UserDetail extends Component {
 const UserDetail_ = register('UserDetail')(UserDetail);
 
 const setup = ctx => {
-  ctx.aux('onUrlChanged', (params, action) => {
+  ctx.aux('$$CONCENT_ROUTER/onUrlChanged', (params, action) => {
     ctx.setState({ msg: 'url changed ' + Date.now() });
   });
 }
 const iState = { msg: '' };
 
 const F = () => (
-  <CcFragment setup={setup} state={iState} render={ctx => {
+  <CcFragment register={{setup,state:iState}} render={ctx => {
     return <h1>fragment msg: {ctx.state.msg}</h1>
   }} />
 );
+
+function FnComp(){
+  const ctx = useConcent({setup,state:iState});
+  return <h1>fragment msg: {ctx.state.msg}</h1>
+}
 
 class Layout extends Component {
   render() {
@@ -158,6 +153,7 @@ class Layout extends Component {
         <Route path="/user" component={User_} />
         <Route path="/user/:id" component={UserDetail_} />
         <Route path="/wow" component={F} />
+        <Route path="/fn-comp" component={FnComp} />
       </div>
     )
   }
