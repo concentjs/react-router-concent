@@ -40,8 +40,9 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
     // 只能让最新的一个history的监听起效
     if (history.__insId !== validInsId) return;
 
+    var modName = moduleNameMod.getModuleName();
+
     if (actions.includes(action)) {
-      var modName = moduleNameMod.getModuleName();
       var state = cc.getState(modName);
       if (!state) {
         console.warn(`forget to call configRouterModule after cc.run, react-router-concent will ignore write the changed state`);
@@ -61,7 +62,8 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
       refs.forEach(ref => {
         if (ref.__$$isUnmounted) return;
         try {
-          var fn = ref.ctx.auxMap.onUrlChanged;
+          var urlChangedMethod = modName + '/onUrlChanged';
+          var fn = ref.ctx.auxMap[urlChangedMethod];
           if (fn) {
             //onUrlChanged在组件初次挂载的时候也会执行
             if (_callUrlChangedOnInit) {

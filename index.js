@@ -7,8 +7,11 @@ var cc = require('concent');
 var ROUTER_MODULE = require('./constant').ROUTER_MODULE;
 // var ROUTER_MODULE= Symbol('');
 
+var isConfigureCalled = false;
 
 var configRouterModule = (moduleName = ROUTER_MODULE) => {
+  isConfigureCalled = true;
+
   moduleNameMod.setModuleName(moduleName);
   cc.configure(moduleName, {
     state: {
@@ -19,6 +22,9 @@ var configRouterModule = (moduleName = ROUTER_MODULE) => {
       state: null,
     }
   });
+  return {
+    install: () => ({ name: moduleName })
+  }
 }
 
 var toExport = module.exports = {};
@@ -29,5 +35,14 @@ toExport.Link = Link;
 toExport.history = historyProxy.getHistory();
 toExport.createHistoryProxy = createHistoryProxy;
 toExport.configRouterModule = configRouterModule;
+toExport.getDefaultRouterPlugin = () => {
+  if (isConfigureCalled) {
+    throw new Error(`it seems you have called configRouterModule, you must use its return result as routerPlugin`);
+  }
+
+  return {
+    install: () => ({ name: ROUTER_MODULE })
+  }
+};
 
 toExport.default = toExport;
