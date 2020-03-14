@@ -44,12 +44,12 @@ import { history } from 'react-router-concent';
 <div onClick={()=>history.push('/path')}>点我跳转</div>
 ```
 ### cc类的扩展函数`$$onUrlChanged`
-在cc类`setup`里对`aux`定义`$$CONCENT_ROUTER/onUrlChanged`的监听函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
+在cc类`setup`里设定事件`onUrlChanged`的监听函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
 ```
 @register()
 class Foo extends React.Component{
   $$setup(ctx){
-    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', ()=>{
+    ctx.on('$$CONCENT_ROUTER/onUrlChanged', ()=>{
       // do something here like initPage
     });
   }
@@ -73,7 +73,7 @@ run();
 
 class User extends Component {
   $$setup(ctx) {
-    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', () => {
+    ctx.on('onUrlChanged', () => {
       console.log(params);
       this.init('onUrlChanged');
     });
@@ -98,7 +98,7 @@ const User_ = register('User')(User);
 
 class UserDetail extends Component {
   $$setup(ctx) {
-    ctx.aux('$$CONCENT_ROUTER/onUrlChanged', () => {
+    ctx.on('onUrlChanged', () => {
       console.log(params);
       this.init('onUrlChanged');
     });
@@ -122,7 +122,7 @@ class UserDetail extends Component {
 const UserDetail_ = register('UserDetail')(UserDetail);
 
 const setup = ctx => {
-  ctx.aux('$$CONCENT_ROUTER/onUrlChanged', (params, action) => {
+  ctx.on('onUrlChanged', (params, action) => {
     ctx.setState({ msg: 'url changed ' + Date.now() });
   });
 }
