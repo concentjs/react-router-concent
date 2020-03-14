@@ -1,6 +1,6 @@
 var cc = require('concent');
 var historyProxy = require('../history-proxy');
-var moduleNameMod = require('./module-name');
+var confMod = require('./conf');
 
 var WAIT_REFS_UNSET = 300;
 //比等待的时间多一点，比这个时间大的ref才是真正的需要触发$onUrlChanged，
@@ -28,7 +28,9 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
   if (initCount > 0) {
     //非hotReload 模式才不允许重复设置history，要不然会导致stackblitz里热加载后，使用history.push的操作失效
     if (!cc.ccContext.isHotReloadMode()) {
-      throw new Error('historyProxy already been created! you can not init ConnectedRouter or call createHistoryProxy more than one time.');
+      // throw new Error('historyProxy already been created! you can not init ConnectedRouter or call createHistoryProxy more than one time.');
+      console.warn('historyProxy already been created! you can not init ConnectedRouter or call createHistoryProxy more than one time.');
+      return;
     }
   }
 
@@ -40,12 +42,13 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
     // 只能让最新的一个history的监听起效
     if (history.__insId !== validInsId) return;
 
-    var modName = moduleNameMod.getModuleName();
+    var modName = confMod.getModuleName();
+    var urlChangedEvName = confMod.getUrlChangedEvName();
 
     if (actions.includes(action)) {
       var state = cc.getState(modName);
       if (!state) {
-        console.warn(`forget to call configRouterModule after cc.run, react-router-concent will ignore write the changed state`);
+        console.warn(`forget to call configRouterModule after cc.run, react-router-concent will ignore writing the changed state`);
       } else {
         cc.setState(modName, param);
       }
@@ -56,32 +59,22 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
     //也让concent有足够的时间把改挂的组件全部挂上(对于那种初次挂的组件)
     //然后在去刷新对应的cc组件
     setTimeout(function () {
-      var refs = cc.getRefs();
+      //onUrlChanged在组件初次挂载的时候也会执行
+      if (_callUrlChangedOnInit) {
+        cc.emit(urlChangedEvName, param, action, history);
+        return;
+      }
+      
       var now = Date.now();
-
-      refs.forEach(ref => {
-        if (ref.__$$isUnmounted) return;
-        try {
-          var urlChangedMethod = modName + '/onUrlChanged';
-          var fn = ref.ctx.auxMap[urlChangedMethod];
-          if (fn) {
-            //onUrlChanged在组件初次挂载的时候也会执行
-            if (_callUrlChangedOnInit) {
-              fn.call(ref, param, action, history);
-              return
-            }
-
-            var initTime = ref.ctx.initTime;
-            //时间太短，是初次挂载上，忽略onUrlChanged
-            if (now - initTime > JUST_INIT_TIME_SPAN) {
-              fn.call(ref, param, action, history);
-            }
-          }
-        } catch (err) {
-          console.log(' ************ error occured ************ ');
-          console.error(err);
+      cc.emit({
+        name: urlChangedEvName, canPerform: ref => {
+          var initTime = ref.ctx.initTime;
+          return now - initTime > JUST_INIT_TIME_SPAN
+          //true: 可以执行
+          //false: 时间太短，是初次挂载上，忽略onUrlChanged
         }
-      });
+      }, param, action, history);
+
     }, WAIT_REFS_UNSET);
   });
 }

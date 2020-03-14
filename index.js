@@ -2,17 +2,18 @@ var ConnectRouter = require('./component/ConnectRouter');
 var Link = require('./component/Link');
 var historyProxy = require('./history-proxy');
 var createHistoryProxy = require('./util/createHistoryProxy');
-var moduleNameMod = require('./util/module-name');
+var confMod = require('./util/conf');
 var cc = require('concent');
-var ROUTER_MODULE = require('./constant').ROUTER_MODULE;
+var cst = require('./constant');
 // var ROUTER_MODULE= Symbol('');
 
-var isConfigureCalled = false;
+var configureRoute = (config = {}) => {
+  const moduleName = config.module || cst.ROUTER_MODULE;
+  const evUrlChanged = config.onUrlChanged || cst.EV_URL_CHANGED;
 
-var configRouterModule = (moduleName = ROUTER_MODULE) => {
-  isConfigureCalled = true;
+  confMod.setModuleName(moduleName);
+  confMod.setUrlChangeEvName(evUrlChanged);
 
-  moduleNameMod.setModuleName(moduleName);
   cc.configure(moduleName, {
     state: {
       hash: '',
@@ -29,20 +30,12 @@ var configRouterModule = (moduleName = ROUTER_MODULE) => {
 
 var toExport = module.exports = {};
 
-toExport.ROUTER_MODULE = ROUTER_MODULE;
 toExport.ConnectRouter = ConnectRouter;
 toExport.Link = Link;
 toExport.history = historyProxy.getHistory();
 toExport.createHistoryProxy = createHistoryProxy;
-toExport.configRouterModule = configRouterModule;
-toExport.getDefaultRouterPlugin = () => {
-  if (isConfigureCalled) {
-    throw new Error(`it seems you have called configRouterModule, you must use its return result as routerPlugin`);
-  }
-
-  return {
-    install: () => ({ name: ROUTER_MODULE })
-  }
-};
+toExport.configureRoute = configureRoute;
+toExport.getModuleName = confMod.getModuleName;
+toExport.getUrlChangedEvName = confMod.getUrlChangedEvName;
 
 toExport.default = toExport;
