@@ -31,7 +31,8 @@ export declare const history: {
   listen: H.History['listen'],
   push: H.History['push'],
   replace: H.History['replace'],
-  getRouterHistory: () => H.History
+  getRouterHistory: () => H.History,
+  location: Location,
 };
 
 export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean): void;
