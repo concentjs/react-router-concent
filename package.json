@@ -1,6 +1,6 @@
 {
   "name": "react-router-concent",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "let using react-router more easily in concent",
   "main": "index.js",
   "scripts": {

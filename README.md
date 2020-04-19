@@ -2,11 +2,13 @@
 连接`concent`与`react-router`，让你的`concent`应用完美接入`react-router`.
 
 ## 核心组件与api
+
 ### 使用方法1：ConnectRouter
 在app顶层实例一个ConnectRouter，让`concent`连接上`react-router`
 * {boolean} callUrlChangeOnInit=false
 * {(history:object)=>{}} connected 连接上router的回调函数
-```
+
+```js
 // 设置callUrlChangeOnInit为true时，
 // 由路由切换导致的挂载上的组件，如果该组件定义了$onUrlChanged，则初次挂载的时候就会触发器$onUrlChanged函数的执行
 <ConnectRouter callUrlChangeOnInit={true} />
@@ -18,9 +20,11 @@
 ```
 
 ### 使用方法2：createHistoryProxy
-```
+
+```ts
 createHistoryProxy: (history: RouterHistory, callUrlChangeOnInit?:boolean)
 ```
+
 在顶层容器里，只会初始化一次的地方掉用`createHistoryProxy`
 
 ### Link
@@ -29,7 +33,8 @@ createHistoryProxy: (history: RouterHistory, callUrlChangeOnInit?:boolean)
 * {object} props.?style 样式
 * {boolean} props.?stop=true, 默认是true，触发调用e.stopPropagation
 * {(to:string)=>{}} props.?onClick 点击后的触发回调函数，第一位参数是定义的路径`to`
-```
+
+```js
 import { Link } from 'react-router-concent';
 
 <Link to="/user/:id" style={{border:1px}}>
@@ -38,18 +43,21 @@ import { Link } from 'react-router-concent';
 除了`Link`，用户也可以使用history直接跳转或者执行其他操作，api与`react-router`提供的完全保持一致
 * history.push(path:string)，跳转到某个路径的路由页面
 * 其他history.*** 参考`react-router`的提供与实现
-```
+
+```js
 import { history } from 'react-router-concent';
 
 <div onClick={()=>history.push('/path')}>点我跳转</div>
 ```
+
 ### cc类的扩展函数`$$onUrlChanged`
 在cc类`setup`里设定事件`onUrlChanged`的监听函数，当调用了`history.push`、`history.goBack`，`history.goForward`、`history.replace`的时候, 如果对应的组件还处于存在期，`concent`会触发该函数
-```
+
+```js
 @register()
 class Foo extends React.Component{
   $$setup(ctx){
-    ctx.on('$$CONCENT_ROUTER/onUrlChanged', ()=>{
+    ctx.on('onUrlChanged', ()=>{
       // do something here like initPage
     });
   }
@@ -59,10 +67,20 @@ class Foo extends React.Component{
 ```
 
 ### 关于store
-history的所有操作都将状态同步到了store的`$$CONCENT_ROUTER`模块下，可以在console里打开输入sss回车并查看
+启动`concent`之后，如果配置了路由，则history模块下的所有操作都将状态同步到了store的`$$CONCENT_ROUTER`模块下，可以在console里打开输入sss回车并查看
+
+```js
+import { run, configureRoute } from 'react-router-concent';
+
+// 启动concent
+run();
+
+//配置路由，连击路由到store
+configureRoute();
+```
 
 ## ✨使用范例，[在线示例点我](https://stackblitz.com/edit/cc-react-router-concent?file=index.js)
-```
+```js
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter, Switch, Route } from 'react-router-dom';

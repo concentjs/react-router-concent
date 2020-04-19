@@ -23,9 +23,6 @@ var configureRoute = (config = {}) => {
       state: null,
     }
   });
-  return {
-    install: () => ({ name: moduleName })
-  }
 }
 
 var toExport = module.exports = {};
