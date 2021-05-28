@@ -1,17 +1,42 @@
 
 var history = null;
 var slice = Array.prototype.slice;
+var toString = Object.prototype.toString;
 
 function _historyNotReady() {
   throw new Error('you may forget to initialize <ConnectRouter /> or call createHistoryProxy in your app!');
 }
 
-function _callHistoryMethod() {
-  const args = slice.call(arguments);
-  var method = args[0];
-  var inputArgs = args[1];
+function isObject(val) {
+  return toString.call(val) === '[object Object]'
+}
 
-  if (history) history[method].apply(null, slice.call(inputArgs));
+// call by api
+function _callHistoryMethod() {
+  var args = slice.call(arguments);
+  var method = args[0];
+  // 用户透传的调用参数 arguments 伪数组，这里需提前转为真数组
+  var inputArgs = slice.call(args[1]);
+
+  if (['push', 'replace'].includes(method)) {
+    var firstArg = inputArgs[0];
+    var secondArg = inputArgs[1];
+
+    // 扩展 state 值，表示来自于api调用
+    if (isObject(firstArg)) {
+      if (isObject(firstArg.state)) {
+        firstArg.state.callByApi = true;
+      } else {
+        firstArg.state = { callByApi: true };
+      }
+    } else if (isObject(secondArg)) {
+      secondArg.callByApi = true;
+    } else {
+      inputArgs[1] = { callByApi: true };
+    }
+  }
+
+  if (history) history[method].apply(null, inputArgs);
   else _historyNotReady();
 }
 
