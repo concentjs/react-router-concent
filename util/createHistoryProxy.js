@@ -3,6 +3,7 @@ var historyProxy = require('../history-proxy');
 var confMod = require('./conf');
 
 var WAIT_REFS_UNSET = 300;
+var CALL_TO_LISTEN_TIME_SPAN = 300;
 //比等待的时间多一点，比这个时间大的ref才是真正的需要触发$onUrlChanged，
 //防止快速切换路由时，一个组件既触发了componentDidMount，又触发了$$onUrlChanged
 var JUST_INIT_TIME_SPAN = WAIT_REFS_UNSET + 100;
@@ -44,6 +45,11 @@ module.exports = function createHistoryProxy(history, callUrlChangedOnInit) {
 
     var modName = confMod.getModuleName();
     var urlChangedEvName = confMod.getUrlChangedEvName();
+
+    var callInfo = historyProxy.getLatestCallInfo();
+    if (Date.now() - callInfo.time > CALL_TO_LISTEN_TIME_SPAN) {
+      historyProxy.clearLatestCallInfo();
+    }
 
     if (actions.includes(action)) {
       var state = cc.getState(modName);

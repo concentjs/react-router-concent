@@ -34,5 +34,6 @@ toExport.createHistoryProxy = createHistoryProxy;
 toExport.configureRoute = configureRoute;
 toExport.getModuleName = confMod.getModuleName;
 toExport.getUrlChangedEvName = confMod.getUrlChangedEvName;
+toExport.getLatestCallInfo = historyProxy.getLatestCallInfo;
 
 toExport.default = toExport;

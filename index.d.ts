@@ -11,7 +11,7 @@ type CRProps = {
   callUrlChangedOnInit?: boolean,
   connected?: (History: H.History) => void,
 };
-export class ConnectRouter extends Component<CRProps, {}> {}
+export class ConnectRouter extends Component<CRProps, {}> { }
 
 type LinkProps = {
   className: string,
@@ -53,6 +53,8 @@ export function getModuleName(): string;
 
 export function getUrlChangedEvName(): string;
 
+export function getLatestCallInfo(): { callByApi: boolean, time: number };
+
 
 declare type DefaultExport = {
   getModuleName: typeof getModuleName;
@@ -62,6 +64,7 @@ declare type DefaultExport = {
   history: typeof history,
   createHistoryProxy: typeof createHistoryProxy,
   configureRoute: typeof configureRoute,
+  getLatestCallInfo: typeof getLatestCallInfo,
   IRouterState: IRouterState,
   IOnUrlChangedCb: IOnUrlChangedCb,
 }

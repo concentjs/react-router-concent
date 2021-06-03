@@ -18,26 +18,42 @@ function _callHistoryMethod() {
   // 用户透传的调用参数 arguments 伪数组，这里需提前转为真数组
   var inputArgs = slice.call(args[1]);
 
-  if (['push', 'replace'].includes(method)) {
-    var firstArg = inputArgs[0];
-    var secondArg = inputArgs[1];
+  // hash 路由不支持透传 state，不能如下方式
+  // if (['push', 'replace'].includes(method)) {
+  // var firstArg = inputArgs[0];
+  // var secondArg = inputArgs[1];
 
-    // 扩展 state 值，表示来自于api调用
-    if (isObject(firstArg)) {
-      if (isObject(firstArg.state)) {
-        firstArg.state.callByApi = true;
-      } else {
-        firstArg.state = { callByApi: true };
-      }
-    } else if (isObject(secondArg)) {
-      secondArg.callByApi = true;
-    } else {
-      inputArgs[1] = { callByApi: true };
-    }
+  // // 扩展 state 值，表示来自于api调用
+  // if (isObject(firstArg)) {
+  //   if (isObject(firstArg.state)) {
+  //     firstArg.state.callByApi = true;
+  //   } else {
+  //     firstArg.state = { callByApi: true };
+  //   }
+  // } else if (isObject(secondArg)) {
+  //   secondArg.callByApi = true;
+  // } else {
+  //   inputArgs[1] = { callByApi: true };
+  // }
+  // }
+
+  if (history) {
+    latestInfo = { callByApi: true, callTime: Date.now() };
+    history[method].apply(null, inputArgs);
   }
-
-  if (history) history[method].apply(null, inputArgs);
   else _historyNotReady();
+}
+
+let latestInfo = {
+  callByApi: false,
+  callTime: 0,
+};
+exports.getLatestCallInfo = function () {
+  return latestInfo;
+}
+
+exports.clearLatestCallInfo = function () {
+  latestInfo = { callByApi: false, callTime: 0 };
 }
 
 exports.setHistory = function (_history) {
