@@ -1,8 +1,8 @@
 {
   "name": "react-router-concent",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "let using react-router more easily in concent",
-  "main": "src/index.js",
+  "main": "dist/react-router-concent.js",
   "scripts": {
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
