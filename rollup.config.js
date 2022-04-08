@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs'
 // import { uglify } from 'rollup-plugin-uglify'
 // 替代 uglify，解决 (plugin uglify) Error: Unexpected token: keyword «const»
 import { terser } from 'rollup-plugin-terser'
-import { eslint } from 'rollup-plugin-eslint';
+// import { eslint } from 'rollup-plugin-eslint';
 import pkg from './package.json'
 
 const env = process.env.NODE_ENV;
@@ -44,9 +44,9 @@ const config = {
         'node_modules/react-is/index.js': ['isValidElementType'],
       }
     }),
-    eslint({
-      include: ['src/**/*.js'] // 需要检查的部分
-    }),
+    // eslint({
+    //   include: ['src/**/*.js'] // 需要检查的部分
+    // }),
   ]
 }
 

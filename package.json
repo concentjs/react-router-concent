@@ -1,6 +1,6 @@
 {
   "name": "react-router-concent",
-  "version": "2.2.7",
+  "version": "2.2.9",
   "description": "let using react-router more easily in concent",
   "main": "dist/react-router-concent.js",
   "types": "src/index.d.ts",
@@ -10,7 +10,7 @@
     "build:es": "rm -rf ./es/* && cp -r ./src/* ./es",
     "build:umd": "cross-env BABEL_ENV=rollup NODE_ENV=development rollup -c -o dist/react-router-concent.js",
     "build:umd:min": "cross-env BABEL_ENV=rollup NODE_ENV=production rollup -c -o dist/react-router-concent.min.js",
-    "pub": "npm publish --registry=http://registry.npmjs.org",
+    "pub": "npm publish --registry=https://registry.npmjs.org",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,7 +32,8 @@
   "homepage": "https://github.com/concentjs/react-router-concent#readme",
   "peerDependencies": {
     "concent": "^2.4.0",
-    "react": "^16.13.0"
+    "react": "^16.13.0",
+    "react-router-dom": "^5.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.1.2",
@@ -58,11 +59,13 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "es3ify": "^0.2.0",
-    "eslint": "^4.19.1",
     "eslint-config-prettier": "^3.1.0",
-    "eslint-plugin-import": "^2.14.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "eslint-plugin-react": "^7.9.1",
+    "eslint-plugin-promise": "^5.1.1",
+    "eslint-plugin-react": "^7.26.1",
     "glob": "^7.1.1",
     "jest": "^26.6.3",
     "jest-dom": "^1.12.0",
@@ -84,6 +87,5 @@
     "set-value": "^3.0.2",
     "uglify-js": "3.5.8",
     "yargs-parser": "^20.2.1"
-  },
-  "dependencies": {}
+  }
 }

@@ -9,6 +9,10 @@ export const ROUTER_MODULE: '$$CONCENT_ROUTER';
 
 type CRProps = {
   callUrlChangedOnInit?: boolean,
+  /**
+   * 相比 callUrlChangedOnInit，这个是实时的，没有延迟，方便做一些更方便的清理操作动作
+   */
+  onUrlChange?: (param: any, action: any) => void;
   connected?: (History: H.History) => void,
 };
 export class ConnectRouter extends Component<CRProps, {}> { }
@@ -35,7 +39,7 @@ export declare const history: {
   location: Location,
 };
 
-export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean): void;
+export function createHistoryProxy(history: H.History, callUrlChangedOnInit?: boolean, onUrlChange?: CRProps['onUrlChange']): void;
 export function configureRoute(config?: { module?: string, onUrlChanged?: string }): void;
 export interface IRouterState<T extends any = any> {
   hash: string,

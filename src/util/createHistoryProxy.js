@@ -18,7 +18,7 @@ function getInsId() {
   return insId;
 }
 
-export default function createHistoryProxy(history, callUrlChangedOnInit) {
+export default function createHistoryProxy(history, callUrlChangedOnInit, onUrlChange) {
 
   if (!history.__insId) {
     history.__insId = getInsId();
@@ -42,6 +42,7 @@ export default function createHistoryProxy(history, callUrlChangedOnInit) {
     // 防止CodeSandbox热加载模式下，多个history实例同时监听都有效
     // 只能让最新的一个history的监听起效
     if (history.__insId !== validInsId) return;
+    if (onUrlChange) onUrlChange(param, action);
 
     var modName = confMod.getModuleName();
     var urlChangedEvName = confMod.getUrlChangedEvName();
@@ -60,17 +61,17 @@ export default function createHistoryProxy(history, callUrlChangedOnInit) {
       }
     }
 
-    //给300毫秒延迟，
-    //既让concent有足够时间把该卸载的组件卸掉
-    //也让concent有足够的时间把改挂的组件全部挂上(对于那种初次挂的组件)
-    //然后在去刷新对应的cc组件
+    // 给300毫秒延迟，
+    // 既让concent有足够时间把该卸载的组件卸掉
+    // 也让concent有足够的时间把该挂的组件全部挂上(对于那种初次挂的组件)
+    // 然后再去刷新对应的cc组件
     setTimeout(function () {
       //onUrlChanged在组件初次挂载的时候也会执行
       if (_callUrlChangedOnInit) {
         cc.emit(urlChangedEvName, param, action, history);
         return;
       }
-      
+
       var now = Date.now();
       cc.emit({
         name: urlChangedEvName, canPerform: ref => {
